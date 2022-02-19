@@ -1,6 +1,7 @@
 <template>
   <div class="w-screen h-screen flex flex-col">
-    <NewShare />
+    <ViewFile v-if="viewMode()" />
+    <NewShare v-else />
     <PageFooter />
   </div>
 </template>
@@ -8,12 +9,29 @@
 <script>
 import NewShare from './components/NewShare.vue';
 import PageFooter from './components/PageFooter.vue';
+import ViewFile from './components/ViewFile.vue';
 
 export default {
   name: 'App',
   components: {
     NewShare,
-    PageFooter
+    PageFooter,
+    ViewFile
+  },
+  methods: {
+    viewMode: () => {
+      // View mode shows the shared file when URL parameters are given.
+      // Else shows normal share new file interface.
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const cid = urlParams.get('cid');
+      const type = urlParams.get('ft');
+      if (cid && type) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 }
 </script>

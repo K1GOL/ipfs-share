@@ -2,7 +2,7 @@
   <div class="w-full bg-slate-800 flex flex-row text-zinc-100 border-zinc-100">
     <p class="grow text-center"><a href="https://ipfs-share.web.app" target="_blank" class="underline decoration-solid hover:decoration-double">ipfs-share.web.app</a></p>
     <p class="grow text-center">©{{ year }} K1GOL</p>
-    <p class="grow text-center"><a href="https://github.com/K1GOL" target="_blank" class="underline decoration-solid hover:decoration-double">https://github.com/K1GOL</a></p>
+    <p class="grow text-center"><a href="https://github.com/K1GOL/ipfs-share" target="_blank" class="underline decoration-solid hover:decoration-double">https://github.com/K1GOL/ipfs-share</a></p>
   </div>
 </template>
 
