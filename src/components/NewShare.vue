@@ -1,17 +1,17 @@
 <template>
   <!-- Main contents -->
   <div :class="dynamicBlur" class="w-full h-full bg-gradient-to-br from-slate-700 to-slate-800 flex flex-col items-center justify-center text-zinc-100 border-zinc-100 transition duration-150 ease-in-out z-0">
-    <h1 class="text-8xl text-center pa-8">Share something</h1>
-    <h2 class="text-4xl text-center pb-8">Share anything</h2>
-    <h2 class="text-4xl text-center pb-8">{{ dialog }}</h2>
-    <input type="file" id="upload" @change="upload" class="file:border file:text-sm file:border-solid text-center hidden" />
-    <label for="upload" class="text-center text-3xl transition duration-150 ease-in-out hover:bg-slate-600 active:bg-slate-100 active:text-zinc-700 active:border-slate-100 rounded border-4 w-1/5">Upload</label>
-    <p class="pa-2">Images, videos and audio files fully supported.</p>
+    <h1 class="lg:text-8xl md:text-6xl sm:text-4xl text-center pa-8">Share something</h1>
+    <h2 class="lg:text-4xl md:text-3xl sm:text-2xl text-center pb-8">Share anything</h2>
+    <input type="file" ref="upload" @change="upload" class="file:border file:text-sm file:border-solid text-center hidden" />
+    <div @click="fileSelect" class="lg:w-2/5 md:w-3/5 sm:w-4/5 h-1/4 flex flex-col justify-center cursor-pointer transition duration-150 ease-in-out hover:bg-slate-600 active:bg-slate-100 active:text-zinc-700 active:border-slate-100 rounded border-4">
+      <p class="text-center lg:text-6xl md:text-4xl sm:text-3xl">Upload</p>
+    </div>
     <p class="p-4">Powered by the <a href="https://ipfs.io/" target="_blank" class="underline decoration-solid hover:decoration-double"> Interplanetary File System</a></p>
   </div>
   <!-- Dialog that is shown when a file has been uploaded -->
   <v-dialog :class="dynamicOpacity" v-if="showDialog" v-model="showDialog" class="w-screen h-screen flex place-content-center place-items-center fixed transition duration-150 ease-in-out text-zinc-100 z-10">
-    <div class="w-2/5 min-h-1/5 bg-gray-900 drop-shadow-xl rounded-xl flex flex-col items-center justify-center">
+    <div class="md:w-4/6 sm:w-full min-h-1/5 bg-gray-900 drop-shadow-xl rounded-xl flex flex-col items-center justify-center">
     <button class="place-self-end p-4 pb-0" @click="hideDialog">X</button>
       <p class="text-2xl p-2">{{ fileName }}</p>
       <div class="w-full">
@@ -39,6 +39,9 @@ export default {
     }
   },
   methods: {
+    fileSelect () {
+      this.$refs.upload.click();
+    },
     upload (event) {
       try {
         this.fileName = event.target.files[0].name;
@@ -66,6 +69,8 @@ export default {
               }             
               this.fileUrl = `?cid=${results.path}&ft=${fileType}`;
               this.fileCid = results.path;
+              console.log('res');
+              console.log(this.node);
               this.showDialog = true;
             }
           });
