@@ -14,8 +14,9 @@
     <div class="md:w-4/6 sm:w-full min-h-1/5 bg-gray-900 drop-shadow-xl rounded-xl flex flex-col items-center justify-center">
     <button class="place-self-end p-4 pb-0" @click="hideDialog">X</button>
       <p class="text-2xl p-2">{{ fileName }}</p>
+      <p class="p-2 text-center">The file is being distributed on the IPFS network.<br>Keep ipfs-share open to increase availability of this file in the future.</p>
       <div class="w-full">
-        <p class="p-4 max-w-full inline-block underline decoration-solid hover:decoration-double truncate"><a class="max-w-90 truncate" :href="'https://ipfs-share.web.app/' + fileUrl" target="_blank">https://ipfs-share.web.app/{{ fileUrl }}</a></p><br>
+        <p class="p-4 grow w-full inline-block underline decoration-solid hover:decoration-double text-center truncate"><a class="w-full truncate text-center" :href="'https://ipfs-share.web.app/' + fileUrl" target="_blank">https://ipfs-share.web.app/{{ fileUrl }}</a></p><br>
         <button @click="copyLinkToClipboard" class="p-4 hover:underline hover:decoration-solid">Copy link to clipboard</button>
       </div> 
     </div>
@@ -29,21 +30,23 @@ export default {
   name: 'NewShare',
   data () {
     return {
-      showDialog: false,
-      dynamicBlur: 'blur-none',
-      dynamicOpacity: 'opcaity-0',
-      fileUrl: '',
-      fileCid: '',
-      fileName: '',
-      node: null
+      showDialog: false,            // If results dialog is shown or not.
+      dynamicBlur: 'blur-none',     // Blurs the background of the results dialog.
+      dynamicOpacity: 'opcaity-0',  // Sets the opacity of the results dialog, making transitions possible.
+      fileUrl: '',                  // https://ipfs-share.web.app/ URL of the shared file. 
+      fileCid: '',                  // CID of the shared file.
+      fileName: '',                 // Name of the shared file.
+      node: null                    // Stores the IPFS node.
     }
   },
   methods: {
     fileSelect () {
+      // Shows file select.
       this.$refs.upload.click();
     },
     upload (event) {
       try {
+        // Show dialog.
         this.fileName = event.target.files[0].name;
         this.dynamicBlur = 'blur-sm';
         this.dynamicOpacity = 'opacity-100';
@@ -52,12 +55,13 @@ export default {
           // It was!
           // Send file to IPFS:
           loadScript('https://cdn.jsdelivr.net/npm/ipfs/dist/index.min.js').then(async () => {
-            /* eslint-disable */
-            this.node = await Ipfs.create();
-            /* eslint-enable no-undef */
+            /* eslint-disable no-undef */
+            if (!this.node) {
+              this.node = await Ipfs.create();
+            }
             const results = await this.node.add(event.target.files[0]);
             if (results) {
-              // The file was successfully uploaded to the IPFS for all to enjoy, get shareable URL:
+              // The file was successfully uploaded to the IPFS, get shareable URL:
               // Determine file type first.
               let fileType = 'other';
               if (event.target.files[0].type.indexOf('/') > -1) {
@@ -66,13 +70,13 @@ export default {
                 if (t === 'image' || t === 'audio' || t === 'video') {
                   fileType = t;
                 }
-              }             
+              }
+              // Set dialog values and enable it.   
               this.fileUrl = `?cid=${results.path}&ft=${fileType}`;
               this.fileCid = results.path;
-              console.log('res');
-              console.log(this.node);
               this.showDialog = true;
             }
+            /* eslint-enable no-undef */
           });
         }
       } catch (err) {
@@ -82,9 +86,10 @@ export default {
     },
     hideDialog () {
       // Hides the share link dialog.
-      this.showDialog = false;
       this.dynamicBlur = 'blur-none';
       this.dynamicOpacity = 'opacity-0';
+      // Timeout to allow opacity fading.
+      setTimeout(() => { this.showDialog = false; }, 500);
       this.node.stop();
     },
     copyLinkToClipboard () {

@@ -1,6 +1,7 @@
 {
   "name": "ipfs-share",
-  "version": "1.2.0",
+  "description": "File sharing service powered by the Interplanetary File System.",
+  "version": "1.4.0",
   "author": "K1GOL",
   "homepage": "https://github.com/K1GOL/ipfs-share",
   "repository": {
